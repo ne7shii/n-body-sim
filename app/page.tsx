@@ -1,4 +1,6 @@
 "use client";
+//@ts-nocheck
+
 import { useEffect } from "react";
 import Matter from "matter-js";
 export default function Home() {
@@ -34,17 +36,17 @@ export default function Home() {
       friction: 0.0, // No friction to allow bodies to move freely
     };
     const walls = [
-      Bodies.rectangle(render.options.width / 2, -wallThickness / 2, render.options.width, wallThickness, wallOptions), // Top wall
-      Bodies.rectangle(render.options.width / 2, render.options.height + wallThickness / 2, render.options.width, wallThickness, wallOptions), // Bottom wall
-      Bodies.rectangle(-wallThickness / 2, render.options.height / 2, wallThickness, render.options.height, wallOptions), // Left wall
-      Bodies.rectangle(render.options.width + wallThickness / 2, render.options.height / 2, wallThickness, render.options.height, wallOptions), // Right wall
+      Bodies.rectangle(render.options.width || 0 / 2, -wallThickness / 2, render.options.width || 0, wallThickness, wallOptions), // Top wall
+      Bodies.rectangle(render.options.width || 0 / 2, render.options.height || 0 + wallThickness / 2, render.options.width || 0, wallThickness, wallOptions), // Bottom wall
+      Bodies.rectangle(-wallThickness / 2, render.options.height || 0 / 2, wallThickness, render.options.height || 0, wallOptions), // Left wall
+      Bodies.rectangle(render.options.width || 0 + wallThickness / 2, render.options.height || 0 / 2, wallThickness, render.options.height || 0, wallOptions), // Right wall
     ];
     Composite.add(engine.world, walls);
 
     // Create multiple bodies with random initial positions and velocities
-    const bodies = [];
-    const width = render.options.width;
-    const height = render.options.height;
+    const bodies: any = [];
+    const width = render.options.width || 0;
+    const height = render.options.height || 0;
     const velocityFactor = 0.001;
     const positionFactor = 0.1;
     const massFactor = 100;
@@ -52,12 +54,12 @@ export default function Home() {
     const sunMass = 1;
     for (let i = 0; i < 3; i++) {
       // Create four bodies that will move
-      const positionX = (Math.random()-0.5) * (width ) * positionFactor  + (width/2) ;
-      const positionY = (Math.random()-0.5) * (height)* positionFactor  + (height/2);
+      const positionX = (Math.random() - 0.5) * (width) * positionFactor + (width / 2);
+      const positionY = (Math.random() - 0.5) * (height) * positionFactor + (height / 2);
       const velocityX = (Math.random() - 0.5) * 2 * velocityFactor; // Random velocity between -1 and 1
       const velocityY = (Math.random() - 0.5) * 2 * velocityFactor; // Random velocity between -1 and 1
       const body = Bodies.circle(positionX, positionY, 10, {
-        mass:  massFactor, // Large mass to make the body move slowly
+        mass: massFactor, // Large mass to make the body move slowly
         frictionAir: 0.0,
         restitution: 1.0 // Ensure high elasticity for good bounces
       });
@@ -75,17 +77,17 @@ export default function Home() {
     bodies.push(sun);
     Composite.add(engine.world, sun);
 
-     // Setup mouse control
-     const mouse = Mouse.create(render.canvas);
-     const mouseConstraint = MouseConstraint.create(engine, {
-       mouse: mouse,
-       constraint: {
-         render: { visible: false },
-         stiffness: 0.2,
-       },
-     });
-     Composite.add(engine.world, mouseConstraint);
- 
+    // Setup mouse control
+    const mouse = Mouse.create(render.canvas);
+    const mouseConstraint = MouseConstraint.create(engine, {
+      mouse: mouse,
+      constraint: {
+        render: { visible: false },
+        stiffness: 0.2,
+      },
+    });
+    Composite.add(engine.world, mouseConstraint);
+
     //  Matter.Events.on(mouseConstraint, "mousemove", function (event) {
     //    Matter.Body.setPosition(sun, event.mouse.position);
     //    Matter.Body.setVelocity(sun, { x: 0, y: 0 });
@@ -93,8 +95,8 @@ export default function Home() {
 
     // Apply gravitational forces
     const applyGravity = () => {
-      bodies.forEach((bodyA, indexA) => {
-        bodies.forEach((bodyB, indexB) => {
+      bodies.forEach((bodyA: Matter.Body, indexA: any) => {
+        bodies.forEach((bodyB: Matter.Body, indexB: any) => {
           if (indexA !== indexB) {
             const dx = bodyB.position.x - bodyA.position.x;
             const dy = bodyB.position.y - bodyA.position.y;
@@ -130,7 +132,7 @@ export default function Home() {
     return () => {
       Render.stop(render);
       Runner.stop(runner);
-      Composite.clear(engine.world);
+      Composite.clear(engine.world, false);
       Engine.clear(engine);
       render.canvas.remove();
       render.canvas = null!;
