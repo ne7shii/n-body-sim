@@ -31,6 +31,7 @@ export default function Home() {
     const wallOptions = {
       isStatic: true,
       restitution: 1.0, // Walls will reflect all energy back, no energy lost in collision
+      friction: 0.0, // No friction to allow bodies to move freely
     };
     const walls = [
       Bodies.rectangle(render.options.width / 2, -wallThickness / 2, render.options.width, wallThickness, wallOptions), // Top wall
@@ -44,15 +45,19 @@ export default function Home() {
     const bodies = [];
     const width = render.options.width;
     const height = render.options.height;
-    const velocityFactor = 0.5;
-    for (let i = 0; i < 4; i++) {
+    const velocityFactor = 0.001;
+    const positionFactor = 0.1;
+    const massFactor = 100;
+    const forceFactor = 0.01;
+    const sunMass = 1;
+    for (let i = 0; i < 3; i++) {
       // Create four bodies that will move
-      const positionX = Math.random() * (width - 40) + 20;
-      const positionY = Math.random() * (height - 40) + 20;
+      const positionX = (Math.random()-0.5) * (width ) * positionFactor  + (width/2) ;
+      const positionY = (Math.random()-0.5) * (height)* positionFactor  + (height/2);
       const velocityX = (Math.random() - 0.5) * 2 * velocityFactor; // Random velocity between -1 and 1
       const velocityY = (Math.random() - 0.5) * 2 * velocityFactor; // Random velocity between -1 and 1
       const body = Bodies.circle(positionX, positionY, 10, {
-        mass: 5,
+        mass:  massFactor, // Large mass to make the body move slowly
         frictionAir: 0.0,
         restitution: 1.0 // Ensure high elasticity for good bounces
       });
@@ -62,10 +67,10 @@ export default function Home() {
     Composite.add(engine.world, bodies);
 
     // Create the "sun" body with no initial velocity
-    const sun = Bodies.circle(width / 2, height / 2, 20, {
-      mass: 1000, // large mass to attract other bodies strongly
+    const sun = Bodies.circle(width / 2, height / 2, 5, {
+      mass: sunMass, // large mass to attract other bodies strongly
       frictionAir: 0.0,
-      render: { fillStyle: "yellow" }, // styling to differentiate
+      render: { fillStyle: "blue" }, // styling to differentiate
     });
     bodies.push(sun);
     Composite.add(engine.world, sun);
@@ -101,7 +106,7 @@ export default function Home() {
             Matter.Body.applyForce(
               bodyA,
               bodyA.position,
-              Matter.Vector.mult(force, 0.001) // Small multiplier to control the effect of force
+              Matter.Vector.mult(force, forceFactor) // Small multiplier to control the effect of force
             );
           }
         });
