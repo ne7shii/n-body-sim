@@ -1,5 +1,6 @@
-"use client";
 //@ts-nocheck
+"use client";
+
 
 import { useEffect } from "react";
 import Matter from "matter-js";
@@ -36,10 +37,11 @@ export default function Home() {
       friction: 0.0, // No friction to allow bodies to move freely
     };
     const walls = [
-      Bodies.rectangle(render.options.width || 0 / 2, -wallThickness / 2, render.options.width || 0, wallThickness, wallOptions), // Top wall
-      Bodies.rectangle(render.options.width || 0 / 2, render.options.height || 0 + wallThickness / 2, render.options.width || 0, wallThickness, wallOptions), // Bottom wall
-      Bodies.rectangle(-wallThickness / 2, render.options.height || 0 / 2, wallThickness, render.options.height || 0, wallOptions), // Left wall
-      Bodies.rectangle(render.options.width || 0 + wallThickness / 2, render.options.height || 0 / 2, wallThickness, render.options.height || 0, wallOptions), // Right wall
+   
+      Bodies.rectangle(render.options.width / 2, -wallThickness / 2, render.options.width, wallThickness, wallOptions), // Top wall
+      Bodies.rectangle(render.options.width / 2, render.options.height + wallThickness / 2, render.options.width, wallThickness, wallOptions), // Bottom wall
+      Bodies.rectangle(-wallThickness / 2, render.options.height / 2, wallThickness, render.options.height, wallOptions), // Left wall
+      Bodies.rectangle(render.options.width + wallThickness / 2, render.options.height / 2, wallThickness, render.options.height, wallOptions), // Right wall
     ];
     Composite.add(engine.world, walls);
 
